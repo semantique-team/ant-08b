@@ -54,10 +54,10 @@ inputs = list(Path("/kaggle/input").glob("*"))
 print("Attached inputs:", inputs)
 archives = sorted(Path("/kaggle/input").rglob("*.zip"))
 print("Zip files:", archives)
-candidates = [p for p in archives if "ant-08b" in p.name.lower() and "kaggle" in p.name.lower()]
+candidates = [p for p in archives if "ant-08b" in p.name.lower() and p.suffix == ".zip"]
 if not candidates:
     raise FileNotFoundError(
-        "No ant-08b-kaggle.zip under /kaggle/input. Attach the ant-08b-source dataset "
+        "No ant-08b source zip under /kaggle/input. Attach the ant-08b-source dataset "
         "with Add Input, then restart the session."
     )
 assert len(candidates) == 1, f"Expected one source archive, found: {candidates}"
