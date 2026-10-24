@@ -17,7 +17,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 root = Path.cwd()
-output = Path.home() / "Downloads" / "ant-4b-kaggle.zip"
+output = Path.home() / "Downloads" / "ant-08b-kaggle.zip"
 excluded = {".git", ".venv", ".pytest_cache", "__pycache__", "models", "runs"}
 
 with ZipFile(output, "w", ZIP_DEFLATED) as archive:
@@ -32,8 +32,8 @@ print(f"Created {output} ({output.stat().st_size / 1e6:.1f} MB)")
 PY
 ```
 
-On Kaggle, create a **private Dataset** (for example, `ant-4b-source`) and upload
-`ant-4b-kaggle.zip`. Keep that dataset attached to the notebook as an input.
+On Kaggle, create a **private Dataset** (for example, `ant-08b-source`) and upload
+`ant-08b-kaggle.zip`. Keep that dataset attached to the notebook as an input.
 
 ## 2. Configure the Kaggle notebook
 
@@ -52,10 +52,17 @@ from zipfile import ZipFile
 
 inputs = list(Path("/kaggle/input").glob("*"))
 print("Attached inputs:", inputs)
-archives = list(Path("/kaggle/input").rglob("ant-4b-kaggle.zip"))
-assert len(archives) == 1, f"Expected one source archive, found: {archives}"
+archives = sorted(Path("/kaggle/input").rglob("*.zip"))
+print("Zip files:", archives)
+candidates = [p for p in archives if "ant-08b" in p.name.lower() and "kaggle" in p.name.lower()]
+if not candidates:
+    raise FileNotFoundError(
+        "No ant-08b-kaggle.zip under /kaggle/input. Attach the ant-08b-source dataset "
+        "with Add Input, then restart the session."
+    )
+assert len(candidates) == 1, f"Expected one source archive, found: {candidates}"
 
-repo = Path("/kaggle/working/ant-4b")
+repo = Path("/kaggle/working/ant-08b")
 repo.mkdir(parents=True, exist_ok=True)
 with ZipFile(archives[0]) as archive:
     archive.extractall(repo)
@@ -66,7 +73,7 @@ Install the repo dependencies while preserving Kaggle's preinstalled CUDA-enable
 Pin transformers to the version used to develop and verify this code:
 
 ```python
-%cd /kaggle/working/ant-4b
+%cd /kaggle/working/ant-08b
 %pip install -e '.[train]' 'transformers==5.17.0'
 ```
 
