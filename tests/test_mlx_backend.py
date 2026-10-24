@@ -38,11 +38,8 @@ class FakeTokenizer:
     pad_token_id = 0
     eos_token_id = 2
 
-    def __call__(self, texts, padding=True, truncation=True, max_length=None):
-        return {
-            "input_ids": [[1, 2, 3], [4]],
-            "attention_mask": [[1, 1, 1], [1, 0, 0]],
-        }
+    def encode(self, text, truncation=True, max_length=None):
+        return {"a": [1, 2, 3], "b": [4]}[text]
 
 
 def test_mlx_token_batch_pads_to_bucket():

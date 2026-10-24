@@ -138,13 +138,11 @@ class MlxBackbone(nn.Module):
         return getattr(language_model, "model", language_model)
 
     def _token_batch(self, texts: Sequence[str], cap: int) -> tuple[np.ndarray, np.ndarray]:
-        encoded = self.tokenizer(
-            list(texts), padding=True, truncation=True, max_length=cap
-        )
-        raw_ids = encoded["input_ids"]
-        if hasattr(raw_ids, "detach"):
-            raw_ids = raw_ids.detach().cpu().numpy()
-        rows = [list(map(int, row)) for row in raw_ids]
+        # TokenizerWrapper exposes encode() but is not callable like a raw HF tokenizer.
+        rows = [
+            [int(token) for token in self.tokenizer.encode(text, truncation=True, max_length=cap)]
+            for text in texts
+        ]
         width = max((len(row) for row in rows), default=1)
         target = bucket_max_length([width])
         if target > cap:
@@ -177,7 +175,7 @@ class MlxBackbone(nn.Module):
             self._mx.eval(hidden)
             if isinstance(hidden, (tuple, list)):
                 hidden = hidden[0]
-            hidden_np = np.asarray(hidden).astype(np.float32, copy=False)
+            hidden_np = np.asarray(hidden.astype(self._mx.float32))
             outputs.append(
                 BackboneOutput(
                     hidden_states=torch.from_numpy(hidden_np),
