@@ -34,6 +34,40 @@ quality gate must pass before a quantized checkpoint replaces an unquantized one
 conversion smoke is recorded in
 [`docs/experiments/2026-10-24-mlx-quantization-smoke.md`](docs/experiments/2026-10-24-mlx-quantization-smoke.md).
 
+## Dataset and metric quality
+
+`data/ant-multitask` is generated from hand-written seed situations in `ant/data/usecases.py`.
+The current dataset has **24 decision use cases across English and Italian** and is split by seed
+situation, so no paraphrase of a validation/test situation appears in training. Five use cases are
+held out entirely for the OOD split.
+
+Current generated sizes:
+
+| Split | Rows |
+|---|---:|
+| train | 5,952 |
+| val | 688 |
+| test | 648 |
+| ood | 456 |
+
+The fastest safe way to enlarge the set is to add more distinct seed states or use cases, then
+regenerate:
+
+```bash
+python scripts/build_dataset.py --out data/ant-multitask --seed 7
+```
+
+For a larger template expansion without changing the seeds:
+
+```bash
+python scripts/build_dataset.py \
+  --train-variants 32 --val-variants 12 --test-variants 12 --ood-variants 12
+```
+
+More variants of the same state improve robustness to wording and candidate ordering, but new
+states/use cases are what improve generalization. More rows alone cannot fix a systematic model
+error.
+
 ## Install
 
 ```bash

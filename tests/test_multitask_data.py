@@ -14,6 +14,17 @@ def rows():
     return build_multitask(variants={"train": 3, "val": 2, "test": 2, "ood": 2})
 
 
+def test_use_cases_cover_english_and_italian():
+    languages = {use_case.language for use_case in USE_CASES}
+    assert {"en", "it"} <= languages
+    assert len(USE_CASES) >= 20
+
+
+def test_variant_counts_must_be_positive():
+    with pytest.raises(ValueError, match="positive"):
+        build_multitask(variants={"train": 0})
+
+
 def test_no_state_leaks_across_splits(rows):
     """A seed situation lives in exactly one split (wrappers are stripped for the check)."""
     seeds = {
