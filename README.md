@@ -37,9 +37,9 @@ conversion smoke is recorded in
 ## Dataset and metric quality
 
 `data/ant-multitask` is generated from hand-written seed situations in `ant/data/usecases.py`.
-The current dataset has **24 decision use cases across English and Italian** and is split by seed
-situation, so no paraphrase of a validation/test situation appears in training. Five use cases are
-held out entirely for the OOD split.
+The current dataset has **24 training use cases plus 5 held-out OOD use cases (29 total) across
+English and Italian**, and is split by seed situation, so no paraphrase of a validation/test
+situation appears in training. Five use cases are held out entirely for the OOD split.
 
 Current generated sizes:
 
