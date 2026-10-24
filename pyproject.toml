@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ant-08b"
+version = "0.1.0a0"
+description = "ANT-08B: a lightweight System 1 candidate-scoring decision engine built on Qwen3.5-0.8B"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "ANT-08B contributors" }]
+dependencies = [
+    "torch>=2.2",
+    "transformers>=4.57",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+train = ["peft>=0.14", "accelerate>=1.0"]
+hub = ["huggingface_hub[cli]>=0.26", "hf_transfer"]
+# Apple Silicon only: native MLX inference backend and MLX quantized checkpoints.
+mlx = ["mlx>=0.29", "mlx-lm>=0.29"]
+# Apple Silicon only: fused Metal kernels behind transformers' MetalConfig quantizer.
+# Upper bound tracks transformers' own KERNELS_MAX_VERSION; it refuses newer releases.
+metal = ["kernels>=0.16.0,<0.17"]
+viz = ["pandas>=2.0", "matplotlib>=3.8"]
+dev = [
+    "pytest>=8.0",
+    "peft>=0.14",
+    "accelerate>=1.0",
+    "huggingface_hub[cli]>=0.26",
+    "hf_transfer",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["ant"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: tests that download a real backbone (set ANT_TEST_QWEN to a model id or local path)",
+]

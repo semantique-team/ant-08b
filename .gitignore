@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+build/
+dist/
+
+models/
+checkpoints/
+*.pt
+*.safetensors
+
+# Published ANT head checkpoints live in runs/.  Keep downloaded backbone
+# weights ignored while allowing these lightweight, self-contained artifacts.
+!runs/
+!runs/**
+
+.DS_Store
+hf_cache/
