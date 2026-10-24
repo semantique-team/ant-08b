@@ -101,7 +101,10 @@ class ANTConfig:
         return cls(**{k: v for k, v in dict(data).items() if k in valid})
 
     def save(self, path: str | Path) -> None:
-        Path(path).write_text(json.dumps(self.to_dict(), indent=2) + "\n")
+        destination = Path(path)
+        temporary = destination.with_suffix(destination.suffix + ".tmp")
+        temporary.write_text(json.dumps(self.to_dict(), indent=2) + "\n")
+        temporary.replace(destination)
 
     @classmethod
     def load(cls, path: str | Path) -> "ANTConfig":

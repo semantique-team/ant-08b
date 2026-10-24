@@ -85,6 +85,26 @@ Check that Colab sees the GPU and the expected source/data before starting the l
 
 If `cuda` prints `False`, stop and change the runtime type before training.
 
+Before loading the real backbone, verify the dataset and the training loop with the mock
+backbone. This is a fast smoke test, not the real training run:
+
+```bash
+!python - <<'PY'
+from ant.data.jsonl import load_splits
+
+splits = load_splits('data/ant-multitask')
+assert set(splits) == {'train', 'val', 'test', 'ood'}
+assert all(len(rows) > 0 for rows in splits.values())
+print({name: len(rows) for name, rows in splits.items()})
+PY
+
+!python scripts/train.py --backbone mock --epochs 1 --batch-size 8 \
+  --train-size 24 --val-size 8 --test-size 8 \
+  --no-calibration --out /tmp/ant-training-smoke
+```
+
+If the smoke test fails, fix that first; do not spend GPU time on the real run.
+
 ## 3. Train, calibrate, and evaluate
 
 Run the training script once. It trains the head on `train`, selects the best epoch on `val`,
@@ -194,8 +214,10 @@ ECE `0.0697` on 392 rows and OOD accuracy `0.5602` / ECE `0.2464` on 216 rows; t
 
 ## Expected deliverables
 
-The Colab run directory should contain the ANT head/config, calibration and escalation files,
-`metrics.json`, card metadata, and held-out examples. The returned comparison should report at
-least accuracy and ECE on test/OOD, along with local warm latency at the requested lengths,
-first-predict latency, dtype, and resident memory. Treat the 0.8B variant as a candidate until
-both its test metrics and local serving behavior have been reviewed.
+The Colab run directory should contain the ANT head/config, `calibrator.pt`, `metrics.json`,
+training report, card metadata and held-out examples. `escalation.json` is expected for the
+default target risk, but it is intentionally absent when no threshold can reach that risk; the
+training log then contains a `WARNING: no escalation policy saved`. The returned comparison
+should report at least accuracy and ECE on test/OOD, along with local warm latency at the
+requested lengths, first-predict latency, dtype and resident memory. Treat the 0.8B variant as a
+candidate until both its test metrics and local serving behavior have been reviewed.

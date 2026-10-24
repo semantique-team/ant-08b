@@ -77,13 +77,16 @@ class ANTPredictor:
     def save(self, path: str | Path) -> Path:
         path = self.model.save_head(path)
         if not isinstance(self.calibrator, IdentityCalibrator):
+            calibrator_file = path / "calibrator.pt"
+            temporary = calibrator_file.with_suffix(calibrator_file.suffix + ".tmp")
             torch.save(
                 {
                     "name": getattr(self.calibrator, "name", "custom"),
                     "state_dict": self.calibrator.state_dict(),
                 },
-                path / "calibrator.pt",
+                temporary,
             )
+            temporary.replace(calibrator_file)
         if not isinstance(self.escalation, AlwaysExecute):
             (path / "escalation.json").write_text(
                 json.dumps(self.escalation.to_config(), indent=2) + "\n"

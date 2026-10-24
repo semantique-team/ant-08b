@@ -274,10 +274,16 @@ class ANTModel(nn.Module):
         if self.config.backbone_model == "mock":
             # a mock backbone has no Hub checkpoint to reload from, so persist it
             blob["mock_backbone_state"] = self.backbone.state_dict()
-        torch.save(blob, path / "ant_head.pt")
+        self._save_blob(blob, path / "ant_head.pt")
         self.config.save(path / "config.json")
         self._maybe_save_lora(path)
         return path
+
+    def _save_blob(self, blob: dict, destination: Path) -> None:
+        # Atomic write: a Colab disconnect must not leave a truncated head file.
+        temporary = destination.with_suffix(destination.suffix + ".tmp")
+        torch.save(blob, temporary)
+        temporary.replace(destination)
 
     def _maybe_save_lora(self, path: Path) -> None:
         inner = getattr(self.backbone, "model", None)

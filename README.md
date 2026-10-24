@@ -116,8 +116,9 @@ python -u scripts/train.py \
 
 `--dtype auto` keeps FP16 on a T4; do not force BF16 there. The backbone is frozen, so only the
 compact encoders/scorer are trained. The incomplete local run from the 0.8B exploration is not a
-valid checkpoint: require `metrics.json`, `calibrator.pt`, `escalation.json`, `ant_head.pt` and
-`config.json`.
+valid checkpoint: require `metrics.json`, `calibrator.pt`, `training_report.json`, `ant_head.pt`
+and `config.json`. `escalation.json` is expected for the default target risk but is intentionally
+absent when no threshold can meet it; the training log records that case.
 
 ## Compare with the 4B reference
 

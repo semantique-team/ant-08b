@@ -56,3 +56,12 @@ def test_bad_line_names_file_and_line(tmp_path):
     path.write_text('{"state": "s", "question": "q", "candidates": ["a"], "correct": "z"}\n')
     with pytest.raises(ValueError, match=r"bad.jsonl:1"):
         load_jsonl(path)
+
+
+def test_correct_must_be_a_candidate(tmp_path):
+    path = tmp_path / "bad.jsonl"
+    path.write_text(
+        '{"state": "s", "question": "q", "candidates": ["a", "b"], "correct": "z"}\n'
+    )
+    with pytest.raises(ValueError, match="correct must be one of candidates"):
+        load_jsonl(path)
