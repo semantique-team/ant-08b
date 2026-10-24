@@ -1,0 +1,31 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.8661807735309115,
+      "seconds": 561.2740144729614,
+      "val_loss": 1.0216790558350661,
+      "val_accuracy": 0.6322674418604651
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.11364200312336149,
+      "seconds": 559.7009561061859,
+      "val_loss": 0.7871151432516769,
+      "val_accuracy": 0.7456395348837209
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.010368086844043504,
+      "seconds": 558.3157579898834,
+      "val_loss": 0.7129552965869702,
+      "val_accuracy": 0.7572674418604651
+    }
+  ],
+  "best_epoch": 3,
+  "best_val_loss": 0.7129552965869702,
+  "best_val_accuracy": 0.7572674418604651,
+  "trainable_parameters": 1053696,
+  "total_parameters": 753446720,
+  "checkpoint_path": "/kaggle/working/runs/ant-08b-2026-10-24"
+}
