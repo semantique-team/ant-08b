@@ -30,7 +30,9 @@ Local work is inference/profiling through MLX.
    MLX folder. Quantization never silently requantizes weights at load time.
 
 Both changes are for serving. The head is still trained at full precision on Colab CUDA; the
-quality gate must pass before a quantized checkpoint replaces an unquantized one.
+quality gate must pass before a quantized checkpoint replaces an unquantized one. The local
+conversion smoke is recorded in
+[`docs/experiments/2026-10-24-mlx-quantization-smoke.md`](docs/experiments/2026-10-24-mlx-quantization-smoke.md).
 
 ## Install
 
